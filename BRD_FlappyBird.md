@@ -1,99 +1,177 @@
-# BUSINESS REQUIREMENT DOCUMENT  
-## Dự án: Flappy Bird Game
+# TÀI LIỆU YÊU CẦU NGHIỆP VỤ (BUSINESS REQUIREMENT DOCUMENT - BRD)
+
+## Dự án: Game Flappy Bird Mobile
 
 ---
 
-## 1. Giới thiệu  
-Tài liệu này mô tả các yêu cầu nghiệp vụ cho việc phát triển một trò chơi đơn giản dựa trên Flappy Bird. Hệ thống nhằm cung cấp trải nghiệm giải trí nhẹ, dễ tiếp cận cho người chơi phổ thông.
+## 1. Giới thiệu
+
+### 1.1 Mục đích
+
+Tài liệu này mô tả các yêu cầu nghiệp vụ cho việc phát triển game Flappy Bird trên nền tảng di động. Mục tiêu là xây dựng một trò chơi đơn giản, dễ chơi nhưng gây nghiện, mang lại trải nghiệm giải trí cho người dùng.
+
+### 1.2 Phạm vi
+
+Hệ thống là một ứng dụng game chạy trên Android, cho phép người chơi điều khiển một chú chim vượt qua các chướng ngại vật để đạt điểm số cao nhất.
+
+### 1.3 Định nghĩa
+
+* **Người chơi (Player)**: Người sử dụng ứng dụng để chơi game
+* **Chướng ngại vật (Obstacle)**: Các ống nước mà người chơi phải tránh
+* **Điểm số (Score)**: Số điểm đạt được khi vượt qua chướng ngại vật
+* **Phiên chơi (Game Session)**: Một lần chơi từ khi bắt đầu đến khi kết thúc
 
 ---
 
-## 2. Mục tiêu nghiệp vụ  
-- Phát triển một trò chơi có thể chơi hoàn chỉnh với cơ chế đơn giản.  
-- Đảm bảo trải nghiệm mượt mà và phản hồi nhanh.  
-- Tăng khả năng người chơi quay lại nhiều lần.  
+## 2. Mục tiêu nghiệp vụ
+
+* Xây dựng game đơn giản, dễ tiếp cận
+* Tăng khả năng giữ chân người chơi (retention)
+* Tạo trải nghiệm chơi mượt mà và phản hồi nhanh
+* Cho phép người chơi cạnh tranh điểm số
 
 ---
 
-## 3. Phạm vi  
+## 3. Các bên liên quan (Stakeholders)
 
-### 3.1 Trong phạm vi  
-- Gameplay cơ bản (di chuyển chim, chướng ngại vật, tính điểm).  
-- Quản lý trạng thái trò chơi (bắt đầu, đang chơi, kết thúc, chơi lại).  
-- Lưu và hiển thị điểm cao nhất.  
-
-### 3.2 Ngoài phạm vi  
-- Chế độ nhiều người chơi.  
-- Bảng xếp hạng trực tuyến.  
-- Mua bán trong game hoặc tùy chỉnh nâng cao.  
+| Đối tượng      | Mô tả                          |
+| -------------- | ------------------------------ |
+| Người chơi     | Sử dụng game để giải trí       |
+| Lập trình viên | Phát triển và bảo trì hệ thống |
+| Chủ dự án      | Quản lý và định hướng sản phẩm |
 
 ---
 
-## 4. Các bên liên quan  
-- Nhóm phát triển.  
-- Người chơi.  
-- Giảng viên hoặc người đánh giá.  
+## 4. Mô tả tổng quan hệ thống
+
+### 4.1 Góc nhìn sản phẩm
+
+Game là một ứng dụng độc lập trên thiết bị di động, không phụ thuộc hệ thống bên ngoài (ngoại trừ leaderboard nếu có).
+
+### 4.2 Đặc điểm người dùng
+
+* Người chơi phổ thông
+* Mọi độ tuổi
+* Có kiến thức cơ bản về sử dụng smartphone
+
+### 4.3 Giả định
+
+* Người dùng có thiết bị Android
+* Người dùng quen với thao tác chạm màn hình
+* Kết nối internet không bắt buộc
 
 ---
 
-## 5. Mô tả người dùng  
-Người dùng là người chơi phổ thông, ưu tiên trò chơi đơn giản, dễ hiểu, thời gian chơi ngắn và thao tác nhanh.
+## 5. Yêu cầu chức năng (Functional Requirements)
+
+### 5.1 Điều khiển game
+
+* Người chơi chạm vào màn hình để làm chim bay lên
+* Chim bị ảnh hưởng bởi trọng lực và rơi xuống liên tục
+
+### 5.2 Cơ chế gameplay
+
+* Chim tự động bay về phía trước
+* Chướng ngại vật xuất hiện liên tục
+* Phát hiện va chạm:
+
+  * Va vào ống → kết thúc game
+  * Rơi xuống đất → kết thúc game
+
+### 5.3 Hệ thống tính điểm
+
+* Mỗi lần vượt qua một ống → +1 điểm
+* Hiển thị điểm theo thời gian thực
+
+### 5.4 Trạng thái game
+
+* Màn hình bắt đầu
+* Đang chơi
+* Game Over
+* Cho phép chơi lại
+
+### 5.5 Âm thanh & hiệu ứng
+
+* Âm thanh khi nhảy
+* Âm thanh khi ghi điểm
+* Âm thanh khi thua
+
+### 5.6 Bảng xếp hạng (tùy chọn)
+
+* Lưu điểm cao nhất trên máy
+* Hiển thị kỷ lục
+* Leaderboard online (nâng cao)
 
 ---
 
-## 6. Yêu cầu chức năng  
+## 6. Yêu cầu phi chức năng (Non-Functional Requirements)
 
-### 6.1 Gameplay  
-- Người chơi điều khiển chim bay lên khi có thao tác.  
-- Chim tự động rơi xuống do trọng lực.  
-- Chướng ngại vật di chuyển từ phải sang trái.  
-- Trò chơi kết thúc khi xảy ra va chạm.  
+### 6.1 Hiệu năng
 
-### 6.2 Tính điểm  
-- Hệ thống tăng điểm khi chim vượt qua một chướng ngại vật.  
-- Điểm được hiển thị trong quá trình chơi.  
+* Game chạy mượt ~60 FPS
+* Thời gian tải < 3 giây
 
-### 6.3 Trạng thái trò chơi  
-- Hệ thống bao gồm các trạng thái:  
-  - Bắt đầu  
-  - Đang chơi  
-  - Kết thúc  
-- Người chơi có thể chơi lại sau khi kết thúc.  
+### 6.2 Khả dụng (Usability)
 
-### 6.4 Điều khiển  
-- Hệ thống nhận thao tác từ người dùng qua chạm, click hoặc bàn phím.  
+* Điều khiển 1 chạm đơn giản
+* Giao diện tối giản, dễ hiểu
 
-### 6.5 Lưu trữ dữ liệu  
-- Hệ thống lưu điểm cao nhất trên thiết bị người dùng.  
+### 6.3 Độ tin cậy
+
+* Không crash trong quá trình chơi
+* Xử lý va chạm chính xác
+
+### 6.4 Tương thích
+
+* Android 8.0 trở lên
+* Hỗ trợ nhiều kích thước màn hình
 
 ---
 
-## 7. Yêu cầu phi chức năng  
-- Trò chơi phải chạy mượt với tốc độ khung hình ổn định.  
-- Phản hồi nhanh khi người dùng thao tác.  
-- Không xảy ra lỗi trong quá trình chơi bình thường.  
-- Mã nguồn rõ ràng, dễ bảo trì.  
+## 7. Kiến trúc hệ thống (Tổng quan)
+
+* Frontend: Android (Kotlin/Java)
+* Game Engine: Canvas / Unity (tùy chọn)
+* Lưu trữ: SharedPreferences (lưu điểm)
 
 ---
 
-## 8. Quy tắc nghiệp vụ  
-- Trọng lực luôn tác động làm chim rơi xuống.  
-- Mỗi thao tác tạo ra một lực đẩy lên cố định.  
-- Chướng ngại vật được tạo với độ cao ngẫu nhiên và khoảng cách hợp lý.  
-- Va chạm là điều kiện kết thúc trò chơi.  
+## 8. Ràng buộc
+
+* Thời gian phát triển hạn chế
+* Phụ thuộc hiệu năng thiết bị
+* Yêu cầu đồ họa đơn giản
 
 ---
 
-## 9. Giả định và ràng buộc  
-- Hệ thống phát triển cho một nền tảng (web hoặc mobile).  
-- Thời gian thực hiện dự án có giới hạn.  
-- Nguồn lực và quy mô nhóm hạn chế.  
+## 9. Rủi ro
+
+| Rủi ro                | Giải pháp                  |
+| --------------------- | -------------------------- |
+| Game quá khó          | Điều chỉnh khoảng cách ống |
+| Lag, giật             | Tối ưu rendering           |
+| Người chơi nhanh chán | Thêm hiệu ứng, âm thanh    |
 
 ---
 
-## 10. Tiêu chí thành công  
-- Trò chơi hoạt động ổn định, không lỗi nghiêm trọng.  
-- Người chơi hiểu cách chơi ngay khi bắt đầu.  
-- Người chơi có xu hướng chơi lại nhiều lần.  
+## 10. Định hướng phát triển (Future Enhancements)
+
+* Thêm skin cho nhân vật
+* Hệ thống thành tích (achievement)
+* Chế độ chơi nhiều người
+* Tăng độ khó theo thời gian
 
 ---
+
+## 11. Tiêu chí thành công
+
+* Game hoạt động ổn định
+* Trải nghiệm mượt mà
+* Người chơi quay lại nhiều lần
+* Không có lỗi nghiêm trọng
+
+---
+
+## 12. Kết luận
+
+Game Flappy Bird hướng đến việc mang lại trải nghiệm giải trí đơn giản nhưng gây nghiện. Với cơ chế điều khiển dễ tiếp cận và gameplay hấp dẫn, hệ thống có khả năng thu hút và giữ chân người chơi hiệu quả.
