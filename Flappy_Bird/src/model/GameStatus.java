@@ -75,6 +75,7 @@ public class GameStatus implements Subject {
     }
 
     @Override
+    //16.1.6
     public void notifyGameOver() {
         for (Observer o : observers) {
             o.onGameOver();

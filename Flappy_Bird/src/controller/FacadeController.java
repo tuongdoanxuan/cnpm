@@ -1,12 +1,15 @@
 package controller;
 
+import model.GameStatus;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class FacadeController implements ActionListener, KeyListener {
-   /* private Bird bird;
+
+   private Bird bird;
     private GameStatus gameStatus;
     private List<GameObject> gameObjects;
     private Enviroment enviroment;
@@ -58,7 +61,7 @@ public class FacadeController implements ActionListener, KeyListener {
         }
 
         gameObjects.removeIf(obj -> obj.getX() + obj.getWidth() < 0);
-    }*/
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
