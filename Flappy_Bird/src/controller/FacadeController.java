@@ -1,11 +1,16 @@
 package controller;
 
+import model.Bird;
+import model.Enviroment;
+import model.GameObject;
 import model.GameStatus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FacadeController implements ActionListener, KeyListener {
 
@@ -41,7 +46,7 @@ public class FacadeController implements ActionListener, KeyListener {
 
         // Kiểm tra va chạm và tính điểm
         for (GameObject obj : gameObjects) {
-            // UC_16.1.4
+            // UC_16.1.2
             if (obj.collidesWith(bird)) {
                 gameStatus.setGameOver(true);
                 return;
@@ -52,9 +57,9 @@ public class FacadeController implements ActionListener, KeyListener {
                 obj.setPassed(true);
             }
         }
-        if (shouldAddObstacle()) {
+        /*if (shouldAddObstacle()) {
             createObstacles();
-        }
+        }*/
 
         if (bird.getY() + bird.getHeight() >= GameConfig.BOARD_HEIGHT) {
             gameStatus.setGameOver(true);
