@@ -26,10 +26,14 @@ public abstract class GameStage {
 		if (gameStatus.isGameOver())
 			return;
 
-		// Cập nhật trạng thái chim
+		/*
+		 * UC-11.1.3: Lấy/cập nhật vị trí hiện tại của chim trong quá trình chơi.
+		 */
 		bird.update();
 
-		// Cập nhật tất cả đối tượng game
+		/*
+		 * UC-11.1.4: Cập nhật và lấy thông tin các ống/chướng ngại vật đang hoạt động.
+		 */
 		for (GameObject obj : gameObjects) {
 			obj.update();
 			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
@@ -41,11 +45,35 @@ public abstract class GameStage {
 				gameStatus.setGameOver(true);
 				return;
 			}
+			
+			/*
+			 * UC-11.1.5: Kiểm tra chim đã vượt qua ống hay chưa.
+			 * Điều kiện bird.getX() > obj.getX() + obj.getWidth() cho biết chim đã đi qua khỏi ống.
+			 * 
+			 * UC-11.1.6: Kiểm tra ống đã được tính điểm chưa.
+			 * Điều kiện !obj.getPassed() đảm bảo mỗi ống chỉ được cộng điểm một lần.
+			 */
 
 			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
+				
+				/*
+				 * UC-11.1.7: Tăng điểm cho người chơi khi chim vượt qua ống hợp lệ.
+				 */
 				gameStatus.incrementScore(0.5);
+				
+				/*
+				 * UC-11.1.8: Đánh dấu ống đã được tính điểm để tránh cộng điểm trùng.
+				 */
 				obj.setPassed(true);
 			}
+			
+			/*
+			 * UC-11.2: Nếu chim chưa vượt qua ống, điều kiện bird.getX() > obj.getX() + obj.getWidth() sai,
+			 * hệ thống không tăng điểm và điểm hiện tại được giữ nguyên.
+			 * 
+			 * UC-11.3: Nếu ống đã được tính điểm trước đó, obj.getPassed() == true,
+			 * hệ thống bỏ qua thao tác tăng điểm để tránh cộng điểm trùng.
+			 */
 		}
 		if (shouldAddObstacle()) {
 			createObstacles();

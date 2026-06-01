@@ -3,122 +3,126 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameStatus implements GameStatus.Subject {
+public class GameStatus implements Subject {
+	private double score;
+	private double highScore;
+	private boolean gameOver;
 
-    public interface Observer {
-        void onScoreChanged(double newScore);
-        void onGameOver();
-    }
+//	private String difficulty; // "Easy", "Medium", "Hard"
+//	private int pipeSpawnRate; // Thời gian spawn pipe (ms)
+//	private int pipeSpeed; // Tốc độ di chuyển pipe (px/frame)
+//	private int gravity; // Trọng lực (ảnh hưởng đến rơi tự do của bird)
+//	private int jumpStrength; // Độ mạnh khi nhấn space (độ cao nhảy lên)
 
-    public interface Subject {
-        void addObserver(Observer observer);
-        void removeObserver(Observer observer);
-        void notifyScoreChanged(double newScore);
-        void notifyGameOver();
-    }
+	private List<Observer> observers = new ArrayList<>();
 
-    private double score;
-    private double highScore;
-    private boolean gameOver;
-    private GameState currentState = GameState.START_MENU;
-    private final List<Observer> observers = new ArrayList<>();
+	public GameStatus() {
+		this.score = 0;
+		this.highScore = 0;
+		this.gameOver = false;
+	}
+	public enum GameState {
+	    START_MENU,
+	    WAITING_TO_START,
+	    PLAYING,
+	    GAME_OVER
+	}
+	private GameState currentState = GameState.START_MENU;
 
-    public GameStatus() {
-        this.score = 0;
-        this.highScore = 0;
-        this.gameOver = false;
-    }
+	public void setState(GameState state) {
+	    currentState = state;
+	}
 
-    public enum GameState {
-        START_MENU,
-        WAITING_TO_START,
-        PLAYING,
-        GAME_OVER
-    }
+	public GameState getState() {
+	    return currentState;
+	}
 
-    public GameState getState() {
-        return currentState;
-    }
 
-    public void setState(GameState state) {
-        this.currentState = state;
-    }
+	/*
+	 * UC-11.1.7: Tăng điểm cho người chơi.
+	 * Method này cộng thêm điểm vào điểm hiện tại khi chim vượt qua ống hợp lệ.
+	 * 
+	 */
+	public void incrementScore(double amount) {
+		this.score += amount;
+		notifyScoreChanged(this.score);
+	}
+	
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
+		if (gameOver) {
+			// Cập nhật điểm cao nhất nếu điểm hiện tại cao hơn
+			if (this.score > this.highScore) {
+				this.highScore = this.score;
+			}
+			notifyGameOver();
+		}
+	}
 
-    public void incrementScore(double amount) {
-        this.score += amount;
-        notifyScoreChanged(this.score);
-    }
+	// --- Observer methods ---
+	@Override
+	public void addObserver(Observer observer) {
+		observers.add(observer);
+	}
 
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-        if (gameOver) {
-            if (this.score > this.highScore) {
-                this.highScore = this.score;
-            }
-            notifyGameOver();
-        }
-    }
+	@Override
+	public void removeObserver(Observer observer) {
+		observers.remove(observer);
+	}
 
-    @Override
-    public void addObserver(Observer observer) {
-        if (observer != null && !observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
+	/*
+	 * UC-11.1.9: Thông báo điểm số đã thay đổi
+	 */
+	@Override
+	public void notifyScoreChanged(double newScore) {
+		for (Observer o : observers) {
+			o.onScoreChanged(newScore);
+		}
+	}
 
-    @Override
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
+	@Override
+	public void notifyGameOver() {
+		for (Observer o : observers) {
+			o.onGameOver();
+		}
+	}
 
-    @Override
-    public void notifyScoreChanged(double newScore) {
-        for (Observer o : new ArrayList<>(observers)) {
-            o.onScoreChanged(newScore);
-        }
-    }
+	public double getScore() {
+		return score;
+	}
 
-    @Override
-    public void notifyGameOver() {
-        for (Observer o : new ArrayList<>(observers)) {
-            o.onGameOver();
-        }
-    }
+	public void setScore(double score) {
+		this.score = score;
+		notifyScoreChanged(this.score);
+	}
 
-    public double getScore() {
-        return score;
-    }
+	public double getHighScore() {
+		return highScore;
+	}
 
-    public void setScore(double score) {
-        this.score = score;
-        notifyScoreChanged(this.score);
-    }
+	public void setHighScore(double highScore) {
+		this.highScore = highScore;
+		notifyScoreChanged(this.highScore);
 
-    public double getHighScore() {
-        return highScore;
-    }
+	}
 
-    public void setHighScore(double highScore) {
-        this.highScore = highScore;
-        notifyScoreChanged(this.highScore);
-    }
+	public void reset() {
+		this.score = 0;
+		this.gameOver = false;
+	}
 
-    public void reset() {
-        this.score = 0;
-        this.gameOver = false;
-        notifyScoreChanged(this.score);
-    }
+	// reset lại điểm cao nhất
+	public void resetHighScore() {
+		this.highScore = 0;
+	}
 
-    public void resetHighScore() {
-        this.highScore = 0;
-    }
+	public boolean isGameOver() {
+		return gameOver;
+	}
 
-    public boolean isGameOver() {
-        return gameOver;
-    }
+	public String getScoreText() {
+		return gameOver ? "" + (int) score : String.valueOf((int) score);
+	}
+	
 
-    public String getScoreText() {
-        return String.valueOf((int) score);
-    }
 }
-
