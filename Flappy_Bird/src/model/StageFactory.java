@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 public interface StageFactory {
 	public GameStage createStage(String nameStage);

@@ -1,4 +1,4 @@
-package view;
+package View;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -7,9 +7,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import model.GameConfig;
-import model.GameStatus;
-import model.Observer;
+import Model.*;
 
 public class ScorePanel extends JPanel implements Observer {
 	private JLabel currentScoreLabel;

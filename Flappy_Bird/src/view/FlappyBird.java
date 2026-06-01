@@ -1,7 +1,7 @@
-package view;
+package View;
 
-import controller.FacadeController;
-import model.*;
+import Controller.FacadeController;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
