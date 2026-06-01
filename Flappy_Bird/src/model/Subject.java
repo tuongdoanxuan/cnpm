@@ -1,11 +1,11 @@
-package Model;
+package model;
 
 public interface Subject {
-	void addObserver(Observer observer);
+    void addObserver(Observer observer);
 
-	void removeObserver(Observer observer);
+    void removeObserver(Observer observer);
 
-	void notifyScoreChanged(double newScore);
+    void notifyScoreChanged(double newScore);
 
-	void notifyGameOver();
+    void notifyGameOver();
 }

@@ -1,131 +1,89 @@
 package controller;
 
-import model.*;
-import view.FlappyBird;
-import view.ScorePanel;
+import model.Bird;
+import model.Enviroment;
+import model.GameObject;
+import model.GameStatus;
 
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FacadeController implements ActionListener, KeyListener {
 
-    private final FlappyBird view;
-    private final Timer gameLoop;
-    private final GameStatus gameStatus;
-    private final Bird bird;
-    private final Enviroment env;
-    private final ScorePanel scorePanel;
+   private Bird bird;
+    private GameStatus gameStatus;
+    private List<GameObject> gameObjects;
+    private Enviroment enviroment;
 
-    private GameStage currentStage;
-    private StageFactory factory;
-    private String gameMode = "Dễ"; // Default
-
-    private final GameAudio audio; // Thêm vào thuộc tính
-    
-    private Runnable backToStartCallback;
-
-    public FacadeController(FlappyBird view, Bird bird, GameStatus status,
-                                Enviroment env, ScorePanel scorePanel) {
-        this.view = view;
+    public GameStage(Bird bird, GameStatus gameStatus, Enviroment enviroment) {
         this.bird = bird;
-        this.gameStatus = status;
-        this.env = env;
-        this.scorePanel = scorePanel;
-
-        this.factory = new BasicStageFactory(); // default
-        factory.setDependencies(bird, gameStatus, env);
-        this.currentStage = factory.createStage("Dễ");
-        this.currentStage.setupStage();
-
-        this.gameLoop = new Timer(1000 / 60, this);
-
-     // Khởi tạo Audio Adapter
-        audio = new AudioAdapter(new SoundEffectPlayer(), new BackgroundMusicPlayer());
-        
-        gameLoop.start();
+        this.gameStatus = gameStatus;
+        this.gameObjects = new ArrayList<>();
+        this.enviroment = enviroment;
     }
-    
-    public void setBackToStartCallback(Runnable backToStartCallback) {
-		this.backToStartCallback = backToStartCallback;
-	}
+    public void update() {
+        if (gameStatus.getState() == GameStatus.GameState.WAITING_TO_START) {
+            // Chim dao động nhẹ khi chờ bắt đầu
+            bird.idleMotion();
+            return; // Không cập nhật gameObjects khi đang chờ
+        }
+        //UC_16.1.4
+        if (gameStatus.isGameOver())
+            return;
 
-	public Runnable getBackToStartCallback() {
-    	return backToStartCallback;
-    }
+        // Cập nhật trạng thái chim
+        bird.update();
 
-    public void setGameMode(String mode) {
-        if (!mode.equals(gameMode)) {
-            gameStatus.resetHighScore();
-            gameMode = mode;
+        // Cập nhật tất cả đối tượng game
+        for (GameObject obj : gameObjects) {
+            obj.update();
+            obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
         }
 
-        this.gameMode = mode;
+        // Kiểm tra va chạm và tính điểm
+        for (GameObject obj : gameObjects) {
+            // UC_16.1.2
+            if (obj.collidesWith(bird)) {
+                gameStatus.setGameOver(true);
+                return;
+            }
 
-        if (mode.equals("Asian")) {
-            factory = new ChallengeStageFactory();
-        } else {
-            factory = new BasicStageFactory();
+            if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
+                gameStatus.incrementScore(0.5);
+                obj.setPassed(true);
+            }
+        }
+        /*if (shouldAddObstacle()) {
+            createObstacles();
+        }*/
+
+        if (bird.getY() + bird.getHeight() >= GameConfig.BOARD_HEIGHT) {
+            gameStatus.setGameOver(true);
         }
 
-        factory.setDependencies(bird, gameStatus, env);
-        currentStage = factory.createStage(mode);
-        currentStage.setupStage();
+        gameObjects.removeIf(obj -> obj.getX() + obj.getWidth() < 0);
     }
-
-    public void restartGame() {
-        currentStage.resetGame(view.getHeight());
-        scorePanel.reset();
-        setGameMode(gameMode);
-        gameStatus.setState(GameStatus.GameState.WAITING_TO_START);
-        gameLoop.start();
-        view.requestFocusInWindow();
-        scorePanel.onScoreChanged(gameStatus.getScore());
-    }
-
-    public GameStage getCurrentStage() {
-        return currentStage;
-    }
-
-    public String getGameMode() {
-        return gameMode;
-    }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (gameStatus.getState() != GameStatus.GameState.PLAYING) {
-            view.repaint();
-            return;
-        }
 
+    }
 
-        currentStage.update();
-        view.repaint();
+    @Override
+    public void keyTyped(KeyEvent e) {
 
-        if (gameStatus.isGameOver()) {
-            gameLoop.stop();
-            audio.stopBackgroundMusic();
-        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (gameStatus.getState() == GameStatus.GameState.WAITING_TO_START) {
-            gameStatus.setState(GameStatus.GameState.PLAYING);
-            audio.playBackgroundMusic(); 
-            return;
-        }
 
-        if (gameStatus.getState() == GameStatus.GameState.PLAYING) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                currentStage.birdJump();
-                audio.playJumpSound();
-            }
-        }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
-    @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+
+    }
 }
