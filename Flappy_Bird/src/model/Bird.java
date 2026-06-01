@@ -1,115 +1,110 @@
-package model;
+package Model;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
 
 public class Bird {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-    private double velocityY;
-    private double gravity;
-    private double jumpStrength;
-    private boolean alive;
-    private int boardHeight;
-    private int idleTick;
+	private int x, y; // tọa độ của chim
+	private int width, height; // Kích thước chim (rộng & cao), dùng để vẽ và va chạm (collision)
+	private int velocityY; // Tốc độ rơi theo trục Y (dương: rơi xuống, âm: bay lên)
+	private double gravity;
+	private double jumpStrength;
 
-    public Bird() {
-        this(120, 240, 48, 36);
-    }
+	private double angle = 0; // góc nghiêng
+	private Image image;
+	private double idleAngle = 0; // Góc dao động (góc chuyển động sin)
 
-    public Bird(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.gravity = 0.8;
-        this.jumpStrength = 12.0;
-        this.alive = true;
-        this.idleTick = 0;
-    }
+	// Gọi khi chim đang chờ bắt đầu
+	public void idleMotion() {
+		idleAngle += 0.1;
+		this.setY(y + (int) (5 * Math.sin(idleAngle))); // chuyển động lặp lại (dao động).
+	}
 
-    public void update() {
-        if (!alive) {
-            return;
-        }
-        velocityY += gravity;
-        y += (int) velocityY;
+	public Bird(int x, int y, int width, int height, Image image) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.image = image;
+	}
 
-        if (y < 0) {
-            y = 0;
-            velocityY = 0;
-        }
+	public void setGravity(double gravity) {
+		this.gravity = gravity;
+	}
 
-        if (boardHeight > 0 && y + height >= boardHeight) {
-            y = boardHeight - height;
-            velocityY = 0;
-            alive = false;
-        }
-    }
+	public void setJumpStrength(double jumpStrength) {
+		this.jumpStrength = -Math.abs(jumpStrength); // đảm bảo là số âm
+	}
 
-    public void jump() {
-        if (!alive) {
-            return;
-        }
-        velocityY = -jumpStrength;
-    }
+	// Đặt lại vị trí ban đầu và vận tốc khi reset game
+	public void reset(int boardHeight) {
+		y = boardHeight / 2; // hoặc vị trí y khởi đầu
+		velocityY = 0;
+		angle = 0;
+	}
 
-    public void idleMotion() {
-        idleTick++;
-        y += (int) (Math.sin(idleTick * 0.1) * 1.5);
-    }
+	public void jump() {
+		velocityY = (int) jumpStrength;
+	}
 
-    public void reset(int boardHeight) {
-        this.boardHeight = boardHeight;
-        this.x = 120;
-        this.y = boardHeight / 2;
-        this.velocityY = 0;
-        this.alive = true;
-        this.idleTick = 0;
-    }
+	public void update() {
+		velocityY += gravity;
+		y += velocityY;
 
-    public void render(Graphics g) {
-        if (g == null) {
-            return;
-        }
-        g.setColor(Color.YELLOW);
-        g.fillOval(x, y, width, height);
-        g.setColor(Color.BLACK);
-        g.drawOval(x, y, width, height);
-    }
+		// Cập nhật góc nghiêng
+		angle = Math.toDegrees(Math.atan2(velocityY, 10.0));
+		if (angle < -30)
+			angle = -5;
+		if (angle > 90)
+			angle = 65;
 
-    public int getX() {
-        return x;
-    }
+		if (y < 0) {
+			y = 0;
+			velocityY = 0;
+		}
+	}
 
-    public int getY() {
-        return y;
-    }
+	// Vẽ chim ra màn hình
+	public void render(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		AffineTransform original = g2d.getTransform();
 
-    public int getWidth() {
-        return width;
-    }
+		// Tính vị trí tâm để xoay quanh giữa hình con chim
+		int centerX = x + width / 2;
+		int centerY = y + height / 2;
 
-    public int getHeight() {
-        return height;
-    }
+		// Xoay và vẽ hình ảnh
+		g2d.rotate(Math.toRadians(angle), centerX, centerY);
+		g2d.drawImage(image, x, y, width, height, null);
 
-    public double getVelocityY() {
-        return velocityY;
-    }
+		// Khôi phục lại transform ban đầu
+		g2d.setTransform(original);
+	}
 
-    public void setGravity(double gravity) {
-        this.gravity = gravity;
-    }
+	// Getter & Setter cần thiết
+	public int getX() {
+		return x;
+	}
 
-    public void setJumpStrength(double jumpStrength) {
-        this.jumpStrength = jumpStrength;
-    }
+	public int getY() {
+		return y;
+	}
 
-    public boolean isAlive() {
-        return alive;
-    }
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public Image getImg() {
+		return image;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
 }
-
