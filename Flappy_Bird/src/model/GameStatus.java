@@ -58,7 +58,9 @@ public class GameStatus implements Subject {
 	// --- Observer methods ---
 	@Override
 	public void addObserver(Observer observer) {
-		observers.add(observer);
+		if (observer != null && !observers.contains(observer)) {
+			observers.add(observer);
+		}
 	}
 
 	@Override
@@ -69,14 +71,14 @@ public class GameStatus implements Subject {
 
 	@Override
 	public void notifyScoreChanged(double newScore) {
-		for (Observer o : observers) {
+		for (Observer o : new ArrayList<>(observers)) {
 			o.onScoreChanged(newScore);
 		}
 	}
 
 	@Override
 	public void notifyGameOver() {
-		for (Observer o : observers) {
+		for (Observer o : new ArrayList<>(observers)) {
 			o.onGameOver();
 		}
 	}
@@ -96,13 +98,12 @@ public class GameStatus implements Subject {
 
 	public void setHighScore(double highScore) {
 		this.highScore = highScore;
-		notifyScoreChanged(this.highScore);
-
 	}
 
 	public void reset() {
 		this.score = 0;
 		this.gameOver = false;
+		notifyScoreChanged(this.score);
 	}
 
 	// reset lại điểm cao nhất
