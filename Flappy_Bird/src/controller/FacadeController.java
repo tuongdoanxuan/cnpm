@@ -2,7 +2,7 @@ package Controller;
 
 import Model.*;
 import View.FlappyBird;
-import view.ScorePanel;
+import View.ScorePanel;
 
 import javax.swing.*;
 import java.awt.event.*;

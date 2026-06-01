@@ -1,4 +1,4 @@
-package view;
+package View;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
