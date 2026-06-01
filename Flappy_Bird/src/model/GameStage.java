@@ -26,10 +26,6 @@ public abstract class GameStage {
 		if (gameStatus.isGameOver())
 			return;
 
-		// Cập nhật trạng thái chim
-		bird.update();
-
-		// Cập nhật tất cả đối tượng game
 		for (GameObject obj : gameObjects) {
 			obj.update();
 			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
@@ -42,10 +38,6 @@ public abstract class GameStage {
 				return;
 			}
 
-			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
-				gameStatus.incrementScore(0.5);
-				obj.setPassed(true);
-			}
 		}
 		if (shouldAddObstacle()) {
 			createObstacles();

@@ -90,12 +90,14 @@ public class FacadeController implements ActionListener, KeyListener {
         return gameMode;
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameStatus.getState() != GameStatus.GameState.PLAYING) {
             view.repaint();
             return;
         }
+
 
         currentStage.update();
         view.repaint();

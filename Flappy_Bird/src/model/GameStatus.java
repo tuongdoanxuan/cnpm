@@ -38,6 +38,7 @@ public class GameStatus implements Subject {
 	}
 
 
+
 	public void incrementScore(double amount) {
 		this.score += amount;
 		notifyScoreChanged(this.score);
@@ -64,6 +65,7 @@ public class GameStatus implements Subject {
 	public void removeObserver(Observer observer) {
 		observers.remove(observer);
 	}
+
 
 	@Override
 	public void notifyScoreChanged(double newScore) {

@@ -39,5 +39,7 @@ public class Test {
 
         frame.setContentPane(startPanel); // Hiển thị start panel ban đầu
         frame.setVisible(true);
+
     }
+
 }
