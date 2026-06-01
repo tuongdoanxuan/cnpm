@@ -104,7 +104,7 @@ public class GameStatus implements Subject {
 
 	public void setHighScore(double highScore) {
 		this.highScore = highScore;
-		notifyScoreChanged(this.highScore);
+		notifyScoreChanged(this.score);
 
 	}
 
