@@ -7,7 +7,9 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import Model.*;
+import Model.GameConfig;
+import Model.GameStatus;
+import Model.Observer;
 
 public class ScorePanel extends JPanel implements Observer {
 	private JLabel currentScoreLabel;
@@ -16,6 +18,8 @@ public class ScorePanel extends JPanel implements Observer {
 	private JButton backToStartButton;
 	private GameStatus gameStatus;
 	private int finalScore;
+	
+	private JLabel rankLabel;
 
 	public ScorePanel(ActionListener restartAction, GameStatus gameStatus) {
 		this(restartAction, gameStatus, null);
@@ -130,6 +134,14 @@ public class ScorePanel extends JPanel implements Observer {
 		scoreContainer.add(separator);
 		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
 		scoreContainer.add(highScorePanel);
+		
+		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		rankLabel = new JLabel("Người mới");
+		rankLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		rankLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		scoreContainer.add(rankLabel);
 
 		return scoreContainer;
 	}
@@ -141,9 +153,14 @@ public class ScorePanel extends JPanel implements Observer {
 
 	@Override
 	public void onGameOver() {
-		currentScoreLabel.setText(String.valueOf(finalScore));
-		highScoreLabel.setText(String.valueOf((int) gameStatus.getHighScore()));
-		setVisible(true);
+	    currentScoreLabel.setText(String.valueOf(finalScore));
+	    highScoreLabel.setText(String.valueOf((int) gameStatus.getHighScore()));
+	    // Tường: Thêm đánh giá trình độ của người chơi khi thua
+	    rankLabel.setText(
+	        "Trình độ: " + gameStatus.getRank()
+	    );
+
+	    setVisible(true);
 	}
 
 	public void reset() {

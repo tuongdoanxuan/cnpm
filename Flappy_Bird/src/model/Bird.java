@@ -49,8 +49,6 @@ public class Bird {
 		velocityY = (int) jumpStrength;
 	}
 
-	// [Hà Duy Đại - 23130037] Kiểm thử logic vật lý trọng lực và cập nhật tọa độ bay của Bird
-
 	public void update() {
 		velocityY += gravity;
 		y += velocityY;

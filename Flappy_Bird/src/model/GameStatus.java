@@ -116,5 +116,23 @@ public class GameStatus implements Subject {
 		return gameOver ? "" + (int) score : String.valueOf((int) score);
 	}
 	
+	// Tường: Đánh giá trình độ người chơi khi thua theo số điểm
+	public String getRank() {
+	    int score = (int) this.score;
+
+	    if (score < 10) {
+	        return "Người mới";
+	    }
+
+	    if (score < 20) {
+	        return "Trung bình";
+	    }
+
+	    if (score < 40) {
+	        return "Cao thủ";
+	    }
+
+	    return "Huyền thoại";
+	}	
 
 }
