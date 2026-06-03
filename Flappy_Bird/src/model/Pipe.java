@@ -24,6 +24,9 @@ public class Pipe extends GameObject {
     public int getType() {
         return type;
     }
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     public boolean isVisible() {
         return visible;

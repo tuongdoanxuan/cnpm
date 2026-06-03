@@ -1,3 +1,2 @@
-2026/06/03-22:19:06.762 48b8 Reusing MANIFEST D:\n3k2\SoftwareEngineering_Basic\cnpm\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
-2026/06/03-22:19:06.771 48b8 Recovering log #3
-2026/06/03-22:19:06.773 48b8 Reusing old log D:\n3k2\SoftwareEngineering_Basic\cnpm\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb/000003.log 
+2026/06/03-22:22:49.075 854 Creating DB D:\n3k2\SoftwareEngineering_Basic\cnpm\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb since it was missing.
+2026/06/03-22:22:49.090 854 Reusing MANIFEST D:\n3k2\SoftwareEngineering_Basic\cnpm\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
