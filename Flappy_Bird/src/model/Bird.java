@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -50,6 +50,7 @@ public class Bird {
 	}
 
 	// [Hà Duy Đại - 23130037] Kiểm thử logic vật lý trọng lực và cập nhật tọa độ bay của Bird
+
 	public void update() {
 		velocityY += gravity;
 		y += velocityY;

@@ -1,4 +1,5 @@
-package model;
+package Model;
+
 
 public class GameConfig {
 	public static final int BOARD_WIDTH = 360+200;

@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 import java.awt.Image;
 
@@ -69,6 +69,7 @@ public abstract class GameObject {
 	public abstract void reset(); // reset trạng thái về ban đầu
 
 	// [Hà Duy Đại - 23130037] Kiểm thử và tối ưu hóa thuật toán va chạm (Collision Detection)
+
 	public boolean collidesWith(Bird bird) {
 	    return bird.getX() + bird.getWidth() > this.x &&
 	           bird.getX() < this.x + this.width &&
