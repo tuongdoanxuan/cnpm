@@ -95,6 +95,17 @@ public class FlappyBird extends JPanel {
 		int textWidth = fontMetrics.stringWidth(scoreText);
 		g.drawString(scoreText, (boardWidth - textWidth) / 2, 90);
 
+		if (gameStatus.getCombo() > 1) {
+
+		    g.setFont(new Font("Arial", Font.BOLD, 18));
+		    g.setColor(Color.YELLOW);
+
+		    g.drawString(
+		        "Combo x" + gameStatus.getCombo(),
+		        20,
+		        50
+		    );
+		}
 		g.setFont(new Font("Arial", Font.PLAIN, 16));
 		if ("Asian".equals(controller.getGameMode())) {
 			g.setColor(Color.RED);

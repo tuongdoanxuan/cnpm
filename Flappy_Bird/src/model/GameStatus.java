@@ -7,6 +7,8 @@ public class GameStatus implements Subject {
 	private double score;
 	private double highScore;
 	private boolean gameOver;
+	
+	private int combo = 0;
 
 //	private String difficulty; // "Easy", "Medium", "Hard"
 //	private int pipeSpawnRate; // Thời gian spawn pipe (ms)
@@ -46,6 +48,8 @@ public class GameStatus implements Subject {
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 		if (gameOver) {
+	        combo = 0;
+	        
 			// Cập nhật điểm cao nhất nếu điểm hiện tại cao hơn
 			if (this.score > this.highScore) {
 				this.highScore = this.score;
@@ -100,6 +104,7 @@ public class GameStatus implements Subject {
 
 	public void reset() {
 		this.score = 0;
+		this.combo = 0;
 		this.gameOver = false;
 	}
 
@@ -134,5 +139,17 @@ public class GameStatus implements Subject {
 
 	    return "Huyền thoại";
 	}	
+	
+	public void increaseCombo() {
+	    combo++;
+	}
+
+	public void resetCombo() {
+	    combo = 0;
+	}
+
+	public int getCombo() {
+	    return combo;
+	}
 
 }

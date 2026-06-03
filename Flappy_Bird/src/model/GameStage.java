@@ -66,8 +66,17 @@ public abstract class GameStage {
 			}
 
 			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
-				gameStatus.incrementScore(0.5);
-				obj.setPassed(true);
+				//Tường: Combo-> cộng điểm
+				gameStatus.increaseCombo();
+
+				double scoreAmount = 0.5;
+
+				// Thưởng điểm mỗi 10 combo
+				if (gameStatus.getCombo() % 10 == 0) {
+				    scoreAmount = 1.0;
+				}
+
+				gameStatus.incrementScore(scoreAmount);				obj.setPassed(true);
 			}
 		}
 		if (shouldAddObstacle()) {
