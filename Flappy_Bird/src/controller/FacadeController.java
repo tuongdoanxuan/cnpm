@@ -1,8 +1,8 @@
-package controller;
+package Controller;
 
-import model.*;
-import view.FlappyBird;
-import view.ScorePanel;
+import Model.*;
+import View.FlappyBird;
+import View.ScorePanel;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -89,10 +89,6 @@ public class FacadeController implements ActionListener, KeyListener {
     public String getGameMode() {
         return gameMode;
     }
-    /*
-     * UC-11.1.2: Hệ thống bắt đầu xử lý cập nhật điểm trong game loop.
-     * Phương thức này được Timer gọi liên tục trong quá trình game chạy.
-     */
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -101,9 +97,6 @@ public class FacadeController implements ActionListener, KeyListener {
             return;
         }
 
-        /*
-         * UC-11.1.11: Sau khi xử lý cập nhật điểm, giao diện tiếp tục được vẽ lại
-         */
         currentStage.update();
         view.repaint();
 

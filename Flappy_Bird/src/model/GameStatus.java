@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,6 @@ public class GameStatus implements Subject {
 	}
 
 
-	/*
-	 * UC-11.1.7: Tăng điểm cho người chơi.
-	 * Method này cộng thêm điểm vào điểm hiện tại khi chim vượt qua ống hợp lệ.
-	 * 
-	 */
 	public void incrementScore(double amount) {
 		this.score += amount;
 		notifyScoreChanged(this.score);
@@ -70,9 +65,6 @@ public class GameStatus implements Subject {
 		observers.remove(observer);
 	}
 
-	/*
-	 * UC-11.1.9: Thông báo điểm số đã thay đổi
-	 */
 	@Override
 	public void notifyScoreChanged(double newScore) {
 		for (Observer o : observers) {
