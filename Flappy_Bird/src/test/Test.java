@@ -2,9 +2,9 @@ package test;
 
 import javax.swing.JFrame;
 
-import model.GameConfig;
-import view.FlappyBird;
-import view.StartPanel;
+import Model.GameConfig;
+import View.FlappyBird;
+import View.StartPanel;
 
 public class Test {
     public static void main(String[] args) {

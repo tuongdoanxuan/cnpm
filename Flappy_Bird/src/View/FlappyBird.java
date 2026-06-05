@@ -1,4 +1,5 @@
-package view;
+package View;
+
 
 import controller.FacadeController;
 import model.*;

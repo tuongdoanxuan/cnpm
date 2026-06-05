@@ -1,181 +1,211 @@
-package model;
+package Model;
+
 import java.util.ArrayList;
 import java.util.List;
 
-    public abstract class GameStage {
-        private Bird bird;
-        private GameStatus gameStatus;
-        private List<GameObject> gameObjects;
-        private Enviroment enviroment;
+public abstract class GameStage {
+	private Bird bird;
+	private GameStatus gameStatus;
+	private List<GameObject> gameObjects;
+	private Enviroment enviroment;
 
-        public GameStage(Bird bird, GameStatus gameStatus, Enviroment enviroment) {
-            this.bird = bird;
-            this.gameStatus = gameStatus;
-            this.gameObjects = new ArrayList<>();
-            this.enviroment = enviroment;
-        }
+	public GameStage(Bird bird, GameStatus gameStatus, Enviroment enviroment) {
+		this.bird = bird;
+		this.gameStatus = gameStatus;
+		this.gameObjects = new ArrayList<>();
+		this.enviroment = enviroment;
+	}
 
-        public void update() {
-            if (gameStatus.getState() == GameStatus.GameState.WAITING_TO_START) {
-                // Chim dao động nhẹ khi chờ bắt đầu
-                bird.idleMotion();
-                return; // Không cập nhật gameObjects khi đang chờ
-            }
-            //UC_16.1.4
-            if (gameStatus.isGameOver())
-                return;
+	public void update() {
+		if (gameStatus.getState() == GameStatus.GameState.WAITING_TO_START) {
+			// Chim dao động nhẹ khi chờ bắt đầu
+			bird.idleMotion();
+			return; // Không cập nhật gameObjects khi đang chờ
+		}
 
-            // Cập nhật trạng thái chim
-            bird.update();
+		if (gameStatus.isGameOver())
+			return;
 
-            // Cập nhật tất cả đối tượng game
-            for (GameObject obj : gameObjects) {
-                obj.update();
-                obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
-            }
+		// Cập nhật trạng thái chim
+		bird.update();
 
-            // Kiểm tra va chạm và tính điểm
+//		// Cập nhật tất cả đối tượng game
+//		for (GameObject obj : gameObjects) {
+//			obj.update();
+//			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
+//		}
+		// Tường: Tăng độ khó theo điểm
+		int pipeSpeed = 2;
 
-            for (GameObject obj : gameObjects) {
-                //UC 16.1.2
-                if (obj.collidesWith(bird)) {
-                    gameStatus.setGameOver(true);
-                    return;
-                }
+		if (gameStatus.getScore() >= 40) {
+		    pipeSpeed = 6;
+		} else if (gameStatus.getScore() >= 30) {
+		    pipeSpeed = 5;
+		} else if (gameStatus.getScore() >= 20) {
+		    pipeSpeed = 4;
+		} else if (gameStatus.getScore() >= 10) {
+		    pipeSpeed = 3;
+		}
 
-                if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
-                    gameStatus.incrementScore(0.5);
-                    obj.setPassed(true);
-                }
-            }
-            if (shouldAddObstacle()) {
-                createObstacles();
-            }
+		// Cập nhật tất cả đối tượng game
+		for (GameObject obj : gameObjects) {
 
-            if (bird.getY() + bird.getHeight() >= GameConfig.BOARD_HEIGHT) {
-                gameStatus.setGameOver(true);
-            }
+		    if (obj instanceof Pipe) {
+		        ((Pipe) obj).setSpeed(pipeSpeed);
+		    }
 
-            gameObjects.removeIf(obj -> obj.getX() + obj.getWidth() < 0);
-        }
+		    obj.update();
+		    obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
+		}
 
-        // Getter và Setter
-        public Bird getBird() {
-            return bird;
-        }
+		// Kiểm tra va chạm và tính điểm
+		for (GameObject obj : gameObjects) {
+			if (obj.collidesWith(bird)) {
+				gameStatus.setGameOver(true);
+				return;
+			}
 
-        public void setBird(Bird bird) {
-            this.bird = bird;
-        }
+			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
+				//Tường: Combo-> cộng điểm
+				gameStatus.increaseCombo();
 
-        public GameStatus getGameStatus() {
-            return gameStatus;
-        }
+				double scoreAmount = 0.5;
 
-        public void setGameStatus(GameStatus gameStatus) {
-            this.gameStatus = gameStatus;
-        }
+				// Thưởng điểm mỗi 10 combo
+				if (gameStatus.getCombo() % 10 == 0) {
+				    scoreAmount = 1.0;
+				}
 
-        public List<GameObject> getGameObjects() {
-            return gameObjects;
-        }
+				gameStatus.incrementScore(scoreAmount);				obj.setPassed(true);
+			}
+		}
+		if (shouldAddObstacle()) {
+			createObstacles();
+		}
 
-        public void setGameObjects(List<GameObject> gameObjects) {
-            this.gameObjects = gameObjects;
-        }
+		if (bird.getY() + bird.getHeight() >= GameConfig.BOARD_HEIGHT) {
+			gameStatus.setGameOver(true);
+		}
 
-        public Enviroment getEnviroment() {
-            return enviroment;
-        }
+		gameObjects.removeIf(obj -> obj.getX() + obj.getWidth() < 0);
+	}
 
-        public void setEnviroment(Enviroment enviroment) {
-            this.enviroment = enviroment;
-        }
+	// Getter và Setter
+	public Bird getBird() {
+		return bird;
+	}
 
-        public void birdJump() {
-            bird.jump();
-        }
+	public void setBird(Bird bird) {
+		this.bird = bird;
+	}
 
-        public void resetGame(int boardHeight) {
-            bird.reset(boardHeight);
-            gameObjects.clear(); // Xóa tất cả đối tượng
-            gameStatus.reset();
+	public GameStatus getGameStatus() {
+		return gameStatus;
+	}
 
-            // Thiết lập lại màn chơi sau khi reset
-            setupStage();
-        }
+	public void setGameStatus(GameStatus gameStatus) {
+		this.gameStatus = gameStatus;
+	}
 
-        public final void setupStage() {
-            setupEnvironment();
-            createObstacles();
-            setupBird();
-        }
+	public List<GameObject> getGameObjects() {
+		return gameObjects;
+	}
 
-        // Phương thức trừu tượng cho các lớp con
-        public abstract void setupEnvironment();
+	public void setGameObjects(List<GameObject> gameObjects) {
+		this.gameObjects = gameObjects;
+	}
 
-        public abstract void createObstacles();
+	public Enviroment getEnviroment() {
+		return enviroment;
+	}
 
-        public abstract void setupBird();
+	public void setEnviroment(Enviroment enviroment) {
+		this.enviroment = enviroment;
+	}
 
-        // Phương thức hỗ trợ tạo cặp ống
-        public void addPipePair(int x, boolean isMoving) {
-            int openingSpace = getOpeningSpace(); // Các lớp con xác định khoảng trống
-            int pipeWidth = 64;
-            int pipeHeight = 512;
-            int randomPipeY = (int) (-pipeHeight / 4 - Math.random() * (pipeHeight / 2));
+	public void birdJump() {
+		bird.jump();
+	}
 
-            GameObject topPipe, bottomPipe;
+	public void resetGame(int boardHeight) {
+		bird.reset(boardHeight);
+		gameObjects.clear(); // Xóa tất cả đối tượng
+		gameStatus.reset();
 
-            /*if (isMoving) {
-                // Cặp ống di chuyển
-                topPipe = new MovingPipe(x, randomPipeY, pipeWidth, pipeHeight, ImageAssets.topPipeImg, Pipe.TYPE_TOP_HARD);
-                bottomPipe = new MovingPipe(x, randomPipeY + pipeHeight + openingSpace, pipeWidth, pipeHeight,
-                        ImageAssets.bottomPipeImg, Pipe.TYPE_BOTTOM_HARD);
-            } else {*/
-                // Cặp ống tĩnh
-                topPipe = new Pipe(x, randomPipeY, pipeWidth, pipeHeight, ImageAssets.topPipeImg);
-                ((Pipe) topPipe).setType(Pipe.TYPE_TOP);
+		// Thiết lập lại màn chơi sau khi reset
+		setupStage();
+	}
 
-                bottomPipe = new Pipe(x, randomPipeY + pipeHeight + openingSpace, pipeWidth, pipeHeight,
-                        ImageAssets.bottomPipeImg);
-                ((Pipe) bottomPipe).setType(Pipe.TYPE_BOTTOM);
-//            }
+	public final void setupStage() {
+		setupEnvironment();
+		createObstacles();
+		setupBird();
+	}
 
-            gameObjects.add(topPipe);
-            gameObjects.add(bottomPipe);
-        }
+	// Phương thức trừu tượng cho các lớp con
+	public abstract void setupEnvironment();
 
-        // Phương thức trừu tượng xác định khoảng trống - các lớp con định nghĩa độ khó
-        protected abstract int getOpeningSpace();
+	public abstract void createObstacles();
 
-        // Phương thức thêm đạn (dùng trong chế độ Asian)
-        protected void addBullet(int x, int y) {
-            if (ImageAssets.bulletImg != null) {
-                Bullet bullet = new Bullet(x, y, 80, 30, ImageAssets.bulletImg, -6);
-                gameObjects.add(bullet);
-            }
-        }
+	public abstract void setupBird();
 
+	// Phương thức hỗ trợ tạo cặp ống
+	public void addPipePair(int x, boolean isMoving) {
+		int openingSpace = getOpeningSpace(); // Các lớp con xác định khoảng trống
+		int pipeWidth = 64;
+		int pipeHeight = 512;
+		int randomPipeY = (int) (-pipeHeight / 4 - Math.random() * (pipeHeight / 2));
 
-        // Kiểm tra có cần thêm chướng ngại vật không
-        protected boolean shouldAddObstacle() {
-            if (gameObjects.isEmpty()) {
-                return true;
-            }
+		GameObject topPipe, bottomPipe;
 
-            // Tìm đối tượng ngoài cùng bên phải bằng vòng lặp truyền thống
-            int rightmostX = 0;
-            for (GameObject obj : gameObjects) {
-                if (obj.getX() > rightmostX) {
-                    rightmostX = obj.getX();
-                }
-            }
+		if (isMoving) {
+			// Cặp ống di chuyển
+			topPipe = new MovingPipe(x, randomPipeY, pipeWidth, pipeHeight, ImageAssets.topPipeImg, Pipe.TYPE_TOP_HARD);
+			bottomPipe = new MovingPipe(x, randomPipeY + pipeHeight + openingSpace, pipeWidth, pipeHeight,
+					ImageAssets.bottomPipeImg, Pipe.TYPE_BOTTOM_HARD);
+		} else {
+			// Cặp ống tĩnh
+			topPipe = new Pipe(x, randomPipeY, pipeWidth, pipeHeight, ImageAssets.topPipeImg);
+			((Pipe) topPipe).setType(Pipe.TYPE_TOP);
 
-            return rightmostX < GameConfig.BOARD_WIDTH - getObstacleSpacing();
-        }
+			bottomPipe = new Pipe(x, randomPipeY + pipeHeight + openingSpace, pipeWidth, pipeHeight,
+					ImageAssets.bottomPipeImg);
+			((Pipe) bottomPipe).setType(Pipe.TYPE_BOTTOM);
+		}
 
-        // Các lớp con định nghĩa khoảng cách giữa chướng ngại vật
-        protected abstract int getObstacleSpacing();
-    }
+		gameObjects.add(topPipe);
+		gameObjects.add(bottomPipe);
+	}
 
+	// Phương thức trừu tượng xác định khoảng trống - các lớp con định nghĩa độ khó
+	protected abstract int getOpeningSpace();
+
+	// Phương thức thêm đạn (dùng trong chế độ Asian)
+	protected void addBullet(int x, int y) {
+		if (ImageAssets.bulletImg != null) {
+			Bullet bullet = new Bullet(x, y, 80, 30, ImageAssets.bulletImg, -6);
+			gameObjects.add(bullet);
+		}
+	}
+	
+
+	// Kiểm tra có cần thêm chướng ngại vật không
+	protected boolean shouldAddObstacle() {
+	    if (gameObjects.isEmpty()) {
+	        return true;
+	    }
+
+	    // Tìm đối tượng ngoài cùng bên phải bằng vòng lặp truyền thống
+	    int rightmostX = 0;
+	    for (GameObject obj : gameObjects) {
+	        if (obj.getX() > rightmostX) {
+	            rightmostX = obj.getX();
+	        }
+	    }
+
+	    return rightmostX < GameConfig.BOARD_WIDTH - getObstacleSpacing();
+	}
+
+	// Các lớp con định nghĩa khoảng cách giữa chướng ngại vật
+	protected abstract int getObstacleSpacing();
+}
