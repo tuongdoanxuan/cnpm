@@ -108,7 +108,6 @@ public class GameStatus implements Subject {
 		this.combo = 0;
 		this.gameOver = false;
 	}
-
 	// reset lại điểm cao nhất
 	public void resetHighScore() {
 		this.highScore = 0;

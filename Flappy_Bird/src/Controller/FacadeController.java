@@ -130,7 +130,6 @@ public class FacadeController implements ActionListener, KeyListener {
 			audio.playJumpSound();
 		}
 	}
-
 	}
 
 	@Override

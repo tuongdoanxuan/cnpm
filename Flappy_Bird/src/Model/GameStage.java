@@ -30,7 +30,6 @@ public abstract class GameStage {
 
 		if (gameStatus.isGameOver())
 			return;
-
 		// Cập nhật trạng thái chim
 		bird.update();
 
