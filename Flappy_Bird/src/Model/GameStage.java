@@ -22,6 +22,11 @@ public abstract class GameStage {
 			bird.idleMotion();
 			return; // Không cập nhật gameObjects khi đang chờ
 		}
+		if (gameStatus.getState() == GameStatus.GameState.WAIT) {
+			bird.idleMotion(); // Chim quay tại chỗ
+			// Không cập nhật gameObjects, không cuộn màn hình, không tính điểm
+			return;
+		}
 
 		if (gameStatus.isGameOver())
 			return;
@@ -29,8 +34,31 @@ public abstract class GameStage {
 		// Cập nhật trạng thái chim
 		bird.update();
 
+//		// Cập nhật tất cả đối tượng game
+//		for (GameObject obj : gameObjects) {
+//			obj.update();
+//			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
+//		}
+		// Tường: Tăng độ khó theo điểm
+		int pipeSpeed = 2;
+
+		if (gameStatus.getScore() >= 40) {
+			pipeSpeed = 6;
+		} else if (gameStatus.getScore() >= 30) {
+			pipeSpeed = 5;
+		} else if (gameStatus.getScore() >= 20) {
+			pipeSpeed = 4;
+		} else if (gameStatus.getScore() >= 10) {
+			pipeSpeed = 3;
+		}
+
 		// Cập nhật tất cả đối tượng game
 		for (GameObject obj : gameObjects) {
+
+			if (obj instanceof Pipe) {
+				((Pipe) obj).setSpeed(pipeSpeed);
+			}
+
 			obj.update();
 			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
 		}
@@ -43,7 +71,17 @@ public abstract class GameStage {
 			}
 
 			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
-				gameStatus.incrementScore(0.5);
+				// Tường: Combo-> cộng điểm
+				gameStatus.increaseCombo();
+
+				double scoreAmount = 0.5;
+
+				// Thưởng điểm mỗi 10 combo
+				if (gameStatus.getCombo() % 10 == 0) {
+					scoreAmount = 1.0;
+				}
+
+				gameStatus.incrementScore(scoreAmount);
 				obj.setPassed(true);
 			}
 		}
@@ -155,23 +193,22 @@ public abstract class GameStage {
 			gameObjects.add(bullet);
 		}
 	}
-	
 
 	// Kiểm tra có cần thêm chướng ngại vật không
 	protected boolean shouldAddObstacle() {
-	    if (gameObjects.isEmpty()) {
-	        return true;
-	    }
+		if (gameObjects.isEmpty()) {
+			return true;
+		}
 
-	    // Tìm đối tượng ngoài cùng bên phải bằng vòng lặp truyền thống
-	    int rightmostX = 0;
-	    for (GameObject obj : gameObjects) {
-	        if (obj.getX() > rightmostX) {
-	            rightmostX = obj.getX();
-	        }
-	    }
+		// Tìm đối tượng ngoài cùng bên phải bằng vòng lặp truyền thống
+		int rightmostX = 0;
+		for (GameObject obj : gameObjects) {
+			if (obj.getX() > rightmostX) {
+				rightmostX = obj.getX();
+			}
+		}
 
-	    return rightmostX < GameConfig.BOARD_WIDTH - getObstacleSpacing();
+		return rightmostX < GameConfig.BOARD_WIDTH - getObstacleSpacing();
 	}
 
 	// Các lớp con định nghĩa khoảng cách giữa chướng ngại vật
