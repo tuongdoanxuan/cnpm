@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import Model.Leaderboard;
 
 public class GameStatus implements Subject {
 	private double score;
@@ -49,6 +50,8 @@ public class GameStatus implements Subject {
 		this.gameOver = gameOver;
 		if (gameOver) {
 	        combo = 0;
+	        //Lưu điểm
+	        Leaderboard.saveScore((int)this.score);
 	        
 			// Cập nhật điểm cao nhất nếu điểm hiện tại cao hơn
 			if (this.score > this.highScore) {
