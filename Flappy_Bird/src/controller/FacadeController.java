@@ -128,6 +128,30 @@ public class FacadeController implements ActionListener, KeyListener {
                 audio.playJumpSound();
             }
         }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            gameStatus.setState(GameStatus.GameState.PLAYING);
+            currentStage.birdJump();
+            audio.playJumpSound();
+        }
+    }
+    // thoát nhanh
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        gameStatus.setState(GameStatus.GameState.START_MENU);
+        if (backToStartCallback != null) {
+            backToStartCallback.run();
+        }
+    }
+    // tăng độ mạnh của  nhảy
+		if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
+        env.setJumpStrength(env.getJumpStrength() + 100);
+    }
+        if (e.getKeyCode() == KeyEvent.VK_MINUS) {
+        if (env.getJumpStrength() > 5) {
+            env.setJumpStrength(env.getJumpStrength() - 5);
+        }
+    }
+}
+
     }
 
     @Override
