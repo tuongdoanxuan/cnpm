@@ -64,10 +64,10 @@ public abstract class GameStage {
 
 		// Kiểm tra va chạm và tính điểm
 		for (GameObject obj : gameObjects) {
-			if (obj.collidesWith(bird)) {
+			/*if (obj.collidesWith(bird)) {
 				gameStatus.setGameOver(true);
 				return;
-			}
+			}*/
 
 			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
 				// Tường: Combo-> cộng điểm
