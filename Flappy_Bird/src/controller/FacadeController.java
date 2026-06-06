@@ -90,6 +90,11 @@ public class FacadeController implements ActionListener, KeyListener {
         return gameMode;
     }
 
+    /*
+     * UC-11.1.2: Hệ thống bắt đầu xử lý cập nhật điểm trong game loop.
+     * Phương thức này được Timer gọi liên tục trong quá trình game chạy.
+     */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameStatus.getState() != GameStatus.GameState.PLAYING) {
@@ -98,6 +103,9 @@ public class FacadeController implements ActionListener, KeyListener {
         }
 
         currentStage.update();
+        /*
+         * UC-11.1.11: Sau khi xử lý cập nhật điểm, giao diện tiếp tục được vẽ lại
+         */
         view.repaint();
 
         if (gameStatus.isGameOver()) {
