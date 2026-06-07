@@ -73,10 +73,17 @@ public class FacadeController implements ActionListener, KeyListener {
     }
 
     public void restartGame() {
+        // [UC-02: Start Game] - Bước 2: startGame() / restartGame() - Hệ thống ghi nhận sự kiện đầu vào và bắt đầu khởi tạo
+        // [Sequence Diagram: Start Game] - Bước 2: startGame() gửi đến GamePanel (FacadeController)
+        // [UC-02: Start Game] - Bước 3: Hệ thống khởi tạo môi trường (reset vị trí Bird, xóa list Pipe cũ, set Điểm số = 0)
+        // [Sequence Diagram: Start Game] - Bước 3a, 3b, 3c: resetPosition(), clearAndInitPipes(), setScore(0)
         currentStage.resetGame(view.getHeight());
         scorePanel.reset();
         setGameMode(gameMode);
+        // Đặt trạng thái về WAITING_TO_START để chờ người chơi nhấn phím bắt đầu
         gameStatus.setState(GameStatus.GameState.WAITING_TO_START);
+        // [UC-02: Start Game] - Bước 5: Giao diện chuyển từ Main Menu sang Gameplay Screen, bắt đầu Game Loop và gọi repaint()/render()
+        // [Sequence Diagram: Start Game] - Bước 5: Khởi tạo xong, yêu cầu render và hiển thị trò chơi bắt đầu (displayGameplayScreen)
         gameLoop.start();
         view.requestFocusInWindow();
         scorePanel.onScoreChanged(gameStatus.getScore());
@@ -97,9 +104,15 @@ public class FacadeController implements ActionListener, KeyListener {
             return;
         }
 
+        // [UC-04: Play Game] - Bước 1: Trong mỗi Game Loop, hệ thống tự động cập nhật vị trí của Bird (trọng lực) và Pipe (di chuyển sang trái)
+        // [Sequence Diagram: Play Game] - Bước 1a & 1b: Vòng lặp game (Game Loop - Timer) chạy và cập nhật updatePosition() cho các đối tượng
         currentStage.update();
+        // [UC-04: Play Game] - Bước 5: Hệ thống gọi repaint() để vẽ lại toàn bộ các đối tượng với tọa độ và điểm số mới nhất
+        // [Sequence Diagram: Play Game] - Bước 5: repaint() (Vẽ lại khung hình)
         view.repaint();
 
+        // [UC-04: Play Game] - Bước 4.1: Nếu có va chạm, CollisionDetector báo hiệu setGameOver(true), dừng Game Loop và hiển thị màn hình Game Over
+        // [Sequence Diagram: Play Game] - Bước 4.1: return true (collision = true) -> gọi setGameOver(true) -> stopGameLoop() & displayGameOver()
         if (gameStatus.isGameOver()) {
             gameLoop.stop();
             audio.stopBackgroundMusic();
@@ -109,6 +122,9 @@ public class FacadeController implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (gameStatus.getState() == GameStatus.GameState.WAITING_TO_START) {
+            // [UC-02: Start Game] - Bước 1: Người chơi thực hiện thao tác bắt đầu (nhấn phím)
+            // [UC-02: Start Game] - Bước 4: updateState(PLAYING) - Cập nhật biến GameStatus từ trạng thái WAITING_TO_START sang trạng thái PLAYING
+            // [Sequence Diagram: Start Game] - Bước 1 & 2 & 4: Nhấn Phím Space -> Gọi startGame() -> updateState(PLAYING)
             gameStatus.setState(GameStatus.GameState.PLAYING);
             audio.playBackgroundMusic(); 
             return;
@@ -116,6 +132,8 @@ public class FacadeController implements ActionListener, KeyListener {
 
         if (gameStatus.getState() == GameStatus.GameState.PLAYING) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                // [UC-04: Play Game] - Bước 2: Người chơi nhấn phím Space, hệ thống nhận sự kiện và gọi jump() cấp lực nâng Bird lên
+                // [Sequence Diagram: Play Game] - Bước 2: Input (Nhấn phím) -> gọi jump() nâng chim bay lên (cập nhật vận tốc velocityUpdated)
                 currentStage.birdJump();
                 audio.playJumpSound();
             }
