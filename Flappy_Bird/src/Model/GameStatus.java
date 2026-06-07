@@ -1,12 +1,15 @@
-package model;
+package Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import Model.Leaderboard;
 
 public class GameStatus implements Subject {
 	private double score;
 	private double highScore;
 	private boolean gameOver;
+	
+	private int combo = 0;
 
 //	private String difficulty; // "Easy", "Medium", "Hard"
 //	private int pipeSpawnRate; // Thời gian spawn pipe (ms)
@@ -46,6 +49,10 @@ public class GameStatus implements Subject {
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 		if (gameOver) {
+	        combo = 0;
+	        //Lưu điểm
+	        Leaderboard.saveScore((int)this.score);
+	        
 			// Cập nhật điểm cao nhất nếu điểm hiện tại cao hơn
 			if (this.score > this.highScore) {
 				this.highScore = this.score;
@@ -100,6 +107,7 @@ public class GameStatus implements Subject {
 
 	public void reset() {
 		this.score = 0;
+		this.combo = 0;
 		this.gameOver = false;
 	}
 
@@ -116,5 +124,35 @@ public class GameStatus implements Subject {
 		return gameOver ? "" + (int) score : String.valueOf((int) score);
 	}
 	
+	// Tường: Đánh giá trình độ người chơi khi thua theo số điểm
+	public String getRank() {
+	    int score = (int) this.score;
+
+	    if (score < 10) {
+	        return "Người mới";
+	    }
+
+	    if (score < 20) {
+	        return "Trung bình";
+	    }
+
+	    if (score < 40) {
+	        return "Cao thủ";
+	    }
+
+	    return "Huyền thoại";
+	}	
+	
+	public void increaseCombo() {
+	    combo++;
+	}
+
+	public void resetCombo() {
+	    combo = 0;
+	}
+
+	public int getCombo() {
+	    return combo;
+	}
 
 }
