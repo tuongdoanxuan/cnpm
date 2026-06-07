@@ -29,10 +29,33 @@ public abstract class GameStage {
 		// Cập nhật trạng thái chim
 		bird.update();
 
+//		// Cập nhật tất cả đối tượng game
+//		for (GameObject obj : gameObjects) {
+//			obj.update();
+//			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
+//		}
+		// Tường: Tăng độ khó theo điểm
+		int pipeSpeed = 2;
+
+		if (gameStatus.getScore() >= 40) {
+		    pipeSpeed = 6;
+		} else if (gameStatus.getScore() >= 30) {
+		    pipeSpeed = 5;
+		} else if (gameStatus.getScore() >= 20) {
+		    pipeSpeed = 4;
+		} else if (gameStatus.getScore() >= 10) {
+		    pipeSpeed = 3;
+		}
+
 		// Cập nhật tất cả đối tượng game
 		for (GameObject obj : gameObjects) {
-			obj.update();
-			obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
+
+		    if (obj instanceof Pipe) {
+		        ((Pipe) obj).setSpeed(pipeSpeed);
+		    }
+
+		    obj.update();
+		    obj.setX(obj.getX() + (int) enviroment.getGroundSpeed());
 		}
 
 		// Kiểm tra va chạm và tính điểm
@@ -43,8 +66,17 @@ public abstract class GameStage {
 			}
 
 			if (!obj.getPassed() && bird.getX() > obj.getX() + obj.getWidth()) {
-				gameStatus.incrementScore(0.5);
-				obj.setPassed(true);
+				//Tường: Combo-> cộng điểm
+				gameStatus.increaseCombo();
+
+				double scoreAmount = 0.5;
+
+				// Thưởng điểm mỗi 10 combo
+				if (gameStatus.getCombo() % 10 == 0) {
+				    scoreAmount = 1.0;
+				}
+
+				gameStatus.incrementScore(scoreAmount);				obj.setPassed(true);
 			}
 		}
 		if (shouldAddObstacle()) {

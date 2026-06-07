@@ -1,6 +1,5 @@
 package View;
 
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -8,9 +7,10 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import model.GameConfig;
-import model.GameStatus;
-import model.Observer;
+import Model.GameConfig;
+import Model.GameStatus;
+import Model.Leaderboard;
+import Model.Observer;
 
 public class ScorePanel extends JPanel implements Observer {
 	private JLabel currentScoreLabel;
@@ -19,6 +19,10 @@ public class ScorePanel extends JPanel implements Observer {
 	private JButton backToStartButton;
 	private GameStatus gameStatus;
 	private int finalScore;
+	
+	private JLabel rankLabel;
+	
+	private JTextArea leaderboardArea;
 
 	public ScorePanel(ActionListener restartAction, GameStatus gameStatus) {
 		this(restartAction, gameStatus, null);
@@ -133,6 +137,29 @@ public class ScorePanel extends JPanel implements Observer {
 		scoreContainer.add(separator);
 		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
 		scoreContainer.add(highScorePanel);
+		
+		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		rankLabel = new JLabel("Người mới");
+		rankLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		rankLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		scoreContainer.add(rankLabel);
+		
+		leaderboardArea = new JTextArea();
+		leaderboardArea.setEditable(false);
+		leaderboardArea.setOpaque(false);
+		leaderboardArea.setFont(
+		        new Font("Arial", Font.PLAIN, 14)
+		);
+
+		scoreContainer.add(
+		        Box.createRigidArea(
+		                new Dimension(0,10)
+		        )
+		);
+
+		scoreContainer.add(leaderboardArea);
 
 		return scoreContainer;
 	}
@@ -144,9 +171,39 @@ public class ScorePanel extends JPanel implements Observer {
 
 	@Override
 	public void onGameOver() {
-		currentScoreLabel.setText(String.valueOf(finalScore));
-		highScoreLabel.setText(String.valueOf((int) gameStatus.getHighScore()));
-		setVisible(true);
+	    currentScoreLabel.setText(String.valueOf(finalScore));
+	    highScoreLabel.setText(String.valueOf((int) gameStatus.getHighScore()));
+	    // Tường: Thêm đánh giá trình độ của người chơi khi thua
+	    rankLabel.setText(
+	        "Trình độ: " + gameStatus.getRank()
+	    );
+	    
+	    StringBuilder sb =
+	            new StringBuilder();
+
+	    sb.append("TOP 5\n");
+
+	    int rank = 1;
+
+	    for(Integer score :
+	            Leaderboard.loadScores()) {
+
+	        sb.append(rank)
+	          .append(". ")
+	          .append(score)
+	          .append("\n");
+
+	        rank++;
+
+	        if(rank > 5)
+	            break;
+	    }
+
+	    leaderboardArea.setText(
+	            sb.toString()
+	    );
+
+	    setVisible(true);
 	}
 
 	public void reset() {
