@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
+// Tác giả: Đặng Hoàng Bảo Đạt - 23130046
+// Tính năng: Điểu khiển chim (Control bird) - thiết lập vật lý, trọng lực, góc nghiêng và khả năng nhảy của chim.
 public class Bird {
 	private int x, y; // tọa độ của chim
 	private int width, height; // Kích thước chim (rộng & cao), dùng để vẽ và va chạm (collision)
@@ -45,10 +47,12 @@ public class Bird {
 		angle = 0;
 	}
 
+	// Đặng Hoàng Bảo Đạt - 23130046: Xử lý thao tác nhảy của chim (Bird Control)
 	public void jump() {
 		velocityY = (int) jumpStrength;
 	}
 
+	// Đặng Hoàng Bảo Đạt - 23130046: Cập nhật vật lý và trạng thái rơi tự do của chim
 	public void update() {
 		velocityY += gravity;
 		y += velocityY;
