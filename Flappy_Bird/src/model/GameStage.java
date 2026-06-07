@@ -64,9 +64,21 @@ public abstract class GameStage {
 		}
 
 		// Kiểm tra va chạm và tính điểm
+
+		/*
+		 * UC-16.1.1: Phát hiện va chạm từ UC-12 Detect Collision.
+		 * UC-16.1.2: Xác định trạng thái trò chơi kết thúc.
+		 * UC-16.1.3: Xác định nguyên nhân Game Over.
+		 * UC-16.2.1: System phát hiện Bird va chạm với Pipe hoặc vật cản.
+		 * UC-16.2.2: System lưu nguyên nhân Game Over là "Va chạm chướng ngại vật".
+		 */
 		for (GameObject obj : gameObjects) {
 			if (obj.collidesWith(bird)) {
 				gameStatus.setGameOverReason("Va chạm chướng ngại vật");
+				/*
+				 * UC-16.1.5: Chuyển trạng thái Game Over để dừng chuyển động của Bird,
+				 * dừng di chuyển Pipe và ngừng cập nhật điểm số.
+				 */
 				gameStatus.setGameOver(true);
 				return;
 			}
@@ -111,6 +123,14 @@ public abstract class GameStage {
 		if (shouldAddObstacle()) {
 			createObstacles();
 		}
+
+		/*
+		 * UC-16.1.1: Phát hiện va chạm từ UC-12 Detect Collision.
+		 * UC-16.1.2: Xác định trạng thái trò chơi kết thúc.
+		 * UC-16.1.3: Xác định nguyên nhân Game Over.
+		 * UC-16.3.1: System phát hiện Bird chạm mặt đất hoặc vượt giới hạn màn hình.
+		 * UC-16.3.2: System lưu nguyên nhân Game Over là "Bird chạm mặt đất".
+		 */
 
 		if (bird.getY() + bird.getHeight() >= GameConfig.BOARD_HEIGHT) {
 			gameStatus.setGameOverReason("Bird chạm mặt đất");

@@ -48,6 +48,9 @@ public class ScorePanel extends JPanel implements Observer {
 		buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		// === Restart Button ===
+		/*
+		 * UC-16.1.13: Hiển thị tùy chọn "Restart Game".
+		 */
 		restartButton = new JButton("PLAY AGAIN");
 		restartButton.setFont(new Font("Arial", Font.BOLD, 20));
 		restartButton.setBackground(new Color(232,97,1));
@@ -146,6 +149,9 @@ public class ScorePanel extends JPanel implements Observer {
 		JPanel reasonPanel = new JPanel(new BorderLayout());
 		reasonPanel.setOpaque(false);
 
+		/*
+		 * UC-16.1.10: Chuẩn bị khu vực hiển thị nguyên nhân Game Over.
+		 */
 		JLabel reasonText = new JLabel("Lý do:");
 		reasonText.setFont(new Font("Arial", Font.PLAIN, 18));
 
@@ -195,7 +201,15 @@ public class ScorePanel extends JPanel implements Observer {
 
 	@Override
 	public void onGameOver() {
+
+		/*
+		 * UC-16.1.9: Hiển thị điểm số cuối cùng.
+		 */
 	    currentScoreLabel.setText(String.valueOf(finalScore));
+
+		/*
+		 * UC-16.1.13: Hiển thị tùy chọn "Restart Game".
+		 */
 	    highScoreLabel.setText(String.valueOf((int) gameStatus.getHighScore()));
 
 
@@ -203,6 +217,10 @@ public class ScorePanel extends JPanel implements Observer {
 		if (reason == null || reason.isEmpty()) {
 			reason = "Không xác định được nguyên nhân";
 		}
+
+		/*
+		 * UC-16.1.10: Hiển thị nguyên nhân Game Over.
+		 */
 		gameOverReasonLabel.setText(reason);
 
 
@@ -237,6 +255,10 @@ public class ScorePanel extends JPanel implements Observer {
 	            sb.toString()
 	    );
 
+
+		/*
+		 * UC-16.1.8: Hiển thị màn hình "Game Over".
+		 */
 	    setVisible(true);
 	}
 
