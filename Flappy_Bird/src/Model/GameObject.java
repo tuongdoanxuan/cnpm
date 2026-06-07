@@ -68,13 +68,48 @@ public abstract class GameObject {
 
 	public abstract void reset(); // reset trạng thái về ban đầu
 
-	// [Hà Duy Đại - 23130037] Kiểm thử và tối ưu hóa thuật toán va chạm (Collision Detection)
-
+	// [UC-04: Play Game] - Bước 3: checkCollision() - Hệ thống kiểm tra va chạm bằng so sánh diện tích (Bounding Box / Hitbox) của Bird với Pipe/mặt đất
+	// [Sequence Diagram: Play Game] - Bước 3: getBounds() để lấy birdHitbox và pipeHitbox từ Bird/Pipe để CollisionDetector đối sánh
 	public boolean collidesWith(Bird bird) {
-	    return bird.getX() + bird.getWidth() > this.x &&
-	           bird.getX() < this.x + this.width &&
-	           bird.getY() + bird.getHeight() > this.y &&
-	           bird.getY() < this.y + this.height;
+	    // Hitbox của Bird có khoảng đệm 4px (ngang) và 3px (dọc) để tránh va chạm ảo ở rìa ảnh trong suốt
+	    int birdPaddingX = 4;
+	    int birdPaddingY = 3;
+	    int birdHitboxX = bird.getX() + birdPaddingX;
+	    int birdHitboxY = bird.getY() + birdPaddingY;
+	    int birdHitboxW = bird.getWidth() - 2 * birdPaddingX;
+	    int birdHitboxH = bird.getHeight() - 2 * birdPaddingY;
+
+	    // Hitbox của vật cản (ống nước) có khoảng đệm 6px mỗi bên ngang để khớp với thân ống thực tế (hẹp hơn viền ngoài của miệng ống)
+	    int objPaddingX = 6;
+	    int objHitboxX = this.x + objPaddingX;
+	    int objHitboxW = this.width - 2 * objPaddingX;
+
+	    int objHitboxY = this.y;
+	    int objHitboxH = this.height;
+
+	    if (this instanceof Pipe) {
+	        Pipe pipe = (Pipe) this;
+	        int type = pipe.getType();
+	        int pipePaddingY = 3; // Co nhẹ 3px ở phần miệng ống hở
+	        if (type == Pipe.TYPE_TOP || type == Pipe.TYPE_TOP_HARD) {
+	            // Ống trên: co biên dưới lên
+	            objHitboxH = this.height - pipePaddingY;
+	        } else if (type == Pipe.TYPE_BOTTOM || type == Pipe.TYPE_BOTTOM_HARD) {
+	            // Ống dưới: co biên trên xuống
+	            objHitboxY = this.y + pipePaddingY;
+	            objHitboxH = this.height - pipePaddingY;
+	        }
+	    } else if (this instanceof Bullet) {
+	        // Đối với đạn (Bullet): Co nhỏ cả 2 phương để khớp với hình viên đạn tròn nhỏ
+	        int bulletPaddingY = 3;
+	        objHitboxY = this.y + bulletPaddingY;
+	        objHitboxH = this.height - 2 * bulletPaddingY;
+	    }
+
+	    return birdHitboxX + birdHitboxW > objHitboxX &&
+	           birdHitboxX < objHitboxX + objHitboxW &&
+	           birdHitboxY + birdHitboxH > objHitboxY &&
+	           birdHitboxY < objHitboxY + objHitboxH;
 	}
 
 }
