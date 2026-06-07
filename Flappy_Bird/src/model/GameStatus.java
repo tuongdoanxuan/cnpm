@@ -8,7 +8,9 @@ public class GameStatus implements Subject {
 	private double score;
 	private double highScore;
 	private boolean gameOver;
-	
+
+	private String gameOverReason;
+
 	private int combo = 0;
 
 //	private String difficulty; // "Easy", "Medium", "Hard"
@@ -23,6 +25,7 @@ public class GameStatus implements Subject {
 		this.score = 0;
 		this.highScore = 0;
 		this.gameOver = false;
+		this.gameOverReason = "";
 	}
 	public enum GameState {
 	    START_MENU,
@@ -51,7 +54,16 @@ public class GameStatus implements Subject {
 		this.score += amount;
 		notifyScoreChanged(this.score);
 	}
-	
+
+
+
+	/*
+	 * UC-16.1.5: Dừng chuyển động của Bird.
+	 * UC-16.1.6: Dừng di chuyển Pipe.
+	 * UC-16.1.7: Ngừng cập nhật điểm số.
+	 * UC-16.1.11: Kiểm tra điểm cao hiện tại.
+	 * UC-16.1.12: Lưu High Score nếu điểm mới lớn hơn điểm cũ.
+	 */
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 		if (gameOver) {
@@ -88,6 +100,10 @@ public class GameStatus implements Subject {
 		}
 	}
 
+	/*
+	 * UC-16.1.8: Hiển thị màn hình "Game Over".
+	 * Thông báo cho các Observer cập nhật giao diện Game Over.
+	 */
 	@Override
 	public void notifyGameOver() {
 		for (Observer o : observers) {
@@ -118,6 +134,7 @@ public class GameStatus implements Subject {
 		this.score = 0;
 		this.combo = 0;
 		this.gameOver = false;
+		this.gameOverReason = "";
 	}
 
 	// reset lại điểm cao nhất
@@ -164,4 +181,14 @@ public class GameStatus implements Subject {
 	    return combo;
 	}
 
+	public String getGameOverReason() {
+		return gameOverReason;
+	}
+
+	/*
+	 * UC-16.1.4: Lưu nguyên nhân kết thúc trò chơi.
+	 */
+	public void setGameOverReason(String gameOverReason) {
+		this.gameOverReason = gameOverReason;
+	}
 }
