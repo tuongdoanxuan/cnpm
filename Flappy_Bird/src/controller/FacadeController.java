@@ -7,7 +7,7 @@ import View.ScorePanel;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class FacadeController implements ActionListener, KeyListener {
+public class FacadeController implements ActionListener, KeyListener,MouseListener {
 
     private final FlappyBird view;
     private final Timer gameLoop;
@@ -41,7 +41,7 @@ public class FacadeController implements ActionListener, KeyListener {
 
      // Khởi tạo Audio Adapter
         audio = new AudioAdapter(new SoundEffectPlayer(), new BackgroundMusicPlayer());
-        
+        view.addMouseListener(this);
         gameLoop.start();
     }
     
@@ -133,29 +133,68 @@ public class FacadeController implements ActionListener, KeyListener {
             currentStage.birdJump();
             audio.playJumpSound();
         }
-    }
-    // thoát nhanh
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-        gameStatus.setState(GameStatus.GameState.START_MENU);
-        if (backToStartCallback != null) {
-            backToStartCallback.run();
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            gameStatus.setState(GameStatus.GameState.START_MENU);
+            if (backToStartCallback != null) {
+                backToStartCallback.run();
+            }
         }
-    }
-    // tăng độ mạnh của  nhảy
-		if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
-        env.setJumpStrength(env.getJumpStrength() + 100);
-    }
+        // tăng độ mạnh của  nhảy
+        if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
+            env.setJumpStrength(env.getJumpStrength() + 100);
+        }
         if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-        if (env.getJumpStrength() > 5) {
-            env.setJumpStrength(env.getJumpStrength() - 5);
+            if (env.getJumpStrength() > 5) {
+                env.setJumpStrength(env.getJumpStrength() - 5);
+            }
         }
     }
-}
-
-    }
-
     @Override
     public void keyTyped(KeyEvent e) {}
     @Override
     public void keyReleased(KeyEvent e) {}
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
+        if (gameStatus.getState() == GameStatus.GameState.WAITING_TO_START) {
+            gameStatus.setState(GameStatus.GameState.PLAYING);
+            audio.playBackgroundMusic();
+            return;
+        }
+
+        if (gameStatus.getState() == GameStatus.GameState.PLAYING) {
+            if(e.getButton()==MouseEvent.BUTTON1){
+            currentStage.birdJump();
+            audio.playJumpSound();}
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
+    // thoát nhanh
+
+
+
+
+
