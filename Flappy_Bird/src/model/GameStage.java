@@ -9,6 +9,7 @@ public abstract class GameStage {
 	private List<GameObject> gameObjects;
 	private Enviroment enviroment;
 
+
 	public GameStage(Bird bird, GameStatus gameStatus, Enviroment enviroment) {
 		this.bird = bird;
 		this.gameStatus = gameStatus;
@@ -65,6 +66,7 @@ public abstract class GameStage {
 		// Kiểm tra va chạm và tính điểm
 		for (GameObject obj : gameObjects) {
 			if (obj.collidesWith(bird)) {
+				gameStatus.setGameOverReason("Va chạm chướng ngại vật");
 				gameStatus.setGameOver(true);
 				return;
 			}
@@ -111,6 +113,7 @@ public abstract class GameStage {
 		}
 
 		if (bird.getY() + bird.getHeight() >= GameConfig.BOARD_HEIGHT) {
+			gameStatus.setGameOverReason("Bird chạm mặt đất");
 			gameStatus.setGameOver(true);
 		}
 

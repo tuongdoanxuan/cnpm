@@ -8,7 +8,9 @@ public class GameStatus implements Subject {
 	private double score;
 	private double highScore;
 	private boolean gameOver;
-	
+
+	private String gameOverReason;
+
 	private int combo = 0;
 
 //	private String difficulty; // "Easy", "Medium", "Hard"
@@ -118,6 +120,7 @@ public class GameStatus implements Subject {
 		this.score = 0;
 		this.combo = 0;
 		this.gameOver = false;
+		this.gameOverReason = "";
 	}
 
 	// reset lại điểm cao nhất
@@ -164,4 +167,11 @@ public class GameStatus implements Subject {
 	    return combo;
 	}
 
+	public String getGameOverReason() {
+		return gameOverReason;
+	}
+
+	public void setGameOverReason(String gameOverReason) {
+		this.gameOverReason = gameOverReason;
+	}
 }

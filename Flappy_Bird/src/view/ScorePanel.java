@@ -21,6 +21,7 @@ public class ScorePanel extends JPanel implements Observer {
 	private int finalScore;
 	
 	private JLabel rankLabel;
+	private JLabel gameOverReasonLabel;
 	
 	private JTextArea leaderboardArea;
 
@@ -97,7 +98,7 @@ public class ScorePanel extends JPanel implements Observer {
 		scoreContainer.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(50, 50, 50), 2),
 				new EmptyBorder(20, 30, 20, 30)));
 		scoreContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
-		scoreContainer.setMaximumSize(new Dimension(300, 150));
+		scoreContainer.setMaximumSize(new Dimension(360, 260));
 
 		JLabel scoreTitle = new JLabel("GAME OVER");
 		scoreTitle.setFont(new Font("Arial", Font.BOLD, 30));
@@ -137,7 +138,30 @@ public class ScorePanel extends JPanel implements Observer {
 		scoreContainer.add(separator);
 		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
 		scoreContainer.add(highScorePanel);
-		
+
+
+
+
+
+		JPanel reasonPanel = new JPanel(new BorderLayout());
+		reasonPanel.setOpaque(false);
+
+		JLabel reasonText = new JLabel("Lý do:");
+		reasonText.setFont(new Font("Arial", Font.PLAIN, 18));
+
+		gameOverReasonLabel = new JLabel("");
+		gameOverReasonLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		gameOverReasonLabel.setForeground(new Color(120, 60, 40));
+
+		reasonPanel.add(reasonText, BorderLayout.WEST);
+		reasonPanel.add(gameOverReasonLabel, BorderLayout.EAST);
+
+		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+		scoreContainer.add(reasonPanel);
+
+
+
+
 		scoreContainer.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		rankLabel = new JLabel("Người mới");
@@ -173,6 +197,16 @@ public class ScorePanel extends JPanel implements Observer {
 	public void onGameOver() {
 	    currentScoreLabel.setText(String.valueOf(finalScore));
 	    highScoreLabel.setText(String.valueOf((int) gameStatus.getHighScore()));
+
+
+		String reason = gameStatus.getGameOverReason();
+		if (reason == null || reason.isEmpty()) {
+			reason = "Không xác định được nguyên nhân";
+		}
+		gameOverReasonLabel.setText(reason);
+
+
+
 	    // Tường: Thêm đánh giá trình độ của người chơi khi thua
 	    rankLabel.setText(
 	        "Trình độ: " + gameStatus.getRank()
