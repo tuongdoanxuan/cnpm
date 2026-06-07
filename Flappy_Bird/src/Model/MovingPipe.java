@@ -36,7 +36,7 @@ public class MovingPipe extends Pipe {
     @Override
     public void draw(Graphics g) {
         if (visible && img != null) {
-            g.drawImage(img, x, y + dealtY, width, height, null);
+            g.drawImage(img, x, y, width, height, null);
         }
     }
 
